@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="GAG - Genome Annotation Generator : Console-based application to read, sanitize, annotate and modify genomic data. Can exportsshi an NCBI .tbl file of annotations on a genome." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>GAG - Genome Annotation Generator</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/BrianReallyMany/GAG">View on GitHub</a>
+
+          <h1 id="project_title">GAG - Genome Annotation Generator</h1>
+          <h2 id="project_tagline">Console-based application to read, sanitize, annotate and modify genomic data. Can exportsshi an NCBI .tbl file of annotations on a genome.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/BrianReallyMany/GAG/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/BrianReallyMany/GAG/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="genome-annotation-generator" class="anchor" href="#genome-annotation-generator"><span class="octicon octicon-link"></span></a>Genome Annotation Generator</h1>
+
+<p>A console-based program to read, modify, annotate and output genomic data. Can write files to .gff3 or to the NCBI's .tbl format.</p>
+
+<h3>
+<a name="example-usage" class="anchor" href="#example-usage"><span class="octicon octicon-link"></span></a>Example Usage</h3>
+
+<p>In this exciting vignette, you will create a .tbl file from the .fasta and .gff files provided in the 'walkthrough' directory. You should run these commands from within the main GAG directory, or else adjust the file paths.</p>
+
+<h4>
+<a name="run-program" class="anchor" href="#run-program"><span class="octicon octicon-link"></span></a>Run program</h4>
+
+<pre><code>python console.py
+</code></pre>
+
+<h4>
+<a name="read-in-data" class="anchor" href="#read-in-data"><span class="octicon octicon-link"></span></a>Read in data</h4>
+
+<pre><code>GAG&gt; loadfolder walkthrough
+</code></pre>
+
+<h4>
+<a name="write-tbl-file" class="anchor" href="#write-tbl-file"><span class="octicon octicon-link"></span></a>Write .tbl file</h4>
+
+<pre><code>GAG&gt; writetbl foo.tbl
+</code></pre>
+
+<h4>
+<a name="go-on-your-merry-way" class="anchor" href="#go-on-your-merry-way"><span class="octicon octicon-link"></span></a>Go on your merry way</h4>
+
+<pre><code>GAG&gt; exit
+</code></pre>
+
+<p>With any luck, you now have a file in your working directory called 'foo.tbl'. There may be any number of things wrong with it -- please get in touch with us so we can fix whatever ridiculous errors we have made. We're all in this together :)</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">GAG - Genome Annotation Generator maintained by <a href="https://github.com/BrianReallyMany">BrianReallyMany</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
