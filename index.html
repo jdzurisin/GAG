@@ -32,40 +32,51 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="genome-annotation-generator" class="anchor" href="#genome-annotation-generator"><span class="octicon octicon-link"></span></a>Genome Annotation Generator</h1>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h1>
 
-<p>A console-based program to read, modify, annotate and output genomic data. Can write files to .gff3 or to the NCBI's .tbl format.</p>
+<h4>License</h4>
+<p>GAG is released under the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+<h4>Purpose</h4>
+<p>GAG can read a genome and write it to the NCBI's .tbl format. This is the main purpose of the program. However, if you're writing a .tbl file, there's a good chance that your genome is destined to encounter <a href="https://www.ncbi.nlm.nih.gov/genbank/tbl2asn2">tbl2asn</a> further downstream. In anticipation of this meeting, GAG includes a (growing) number of options to remove questionable features or trim erroneous regions from your genome. These options are outlined in the <a href="#advanced-usage">Advanced Usage</a> secion.</p>
+
+<h1><a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h1>
+
+<p>A console-based program to read, modify, annotate and output genomic data. Can write files to .gff or to the NCBI's .tbl format.</p>
+
+<a href="https://groups.google.com/forum/#!forum/gag_support">Support</a>
 
 <h3>
 <a name="example-usage" class="anchor" href="#example-usage"><span class="octicon octicon-link"></span></a>Example Usage</h3>
 
 <p>In this exciting vignette, you will create a .tbl file from the .fasta and .gff files provided in the 'walkthrough' directory. You should run these commands from within the main GAG directory, or else adjust the file paths.</p>
 
-<h4>
-<a name="run-program" class="anchor" href="#run-program"><span class="octicon octicon-link"></span></a>Run program</h4>
+<h5>
+<a name="run-program" class="anchor" href="#run-program"><span class="octicon octicon-link"></span></a>Run program</h5>
 
 <pre><code>python console.py
 </code></pre>
 
-<h4>
-<a name="read-in-data" class="anchor" href="#read-in-data"><span class="octicon octicon-link"></span></a>Read in data</h4>
+<h5>
+<a name="read-in-data" class="anchor" href="#read-in-data"><span class="octicon octicon-link"></span></a>Read in data</h5>
 
 <pre><code>GAG&gt; load walkthrough
 </code></pre>
 
-<h4>
-<a name="write-tbl-file" class="anchor" href="#write-tbl-file"><span class="octicon octicon-link"></span></a>Write .tbl file</h4>
+<h5>
+<a name="write-tbl-file" class="anchor" href="#write-tbl-file"><span class="octicon octicon-link"></span></a>Write .tbl file</h5>
 
 <pre><code>GAG&gt; write newfolder
 </code></pre>
 
-<h4>
-<a name="go-on-your-merry-way" class="anchor" href="#go-on-your-merry-way"><span class="octicon octicon-link"></span></a>Go on your merry way</h4>
+<h5>
+<a name="go-on-your-merry-way" class="anchor" href="#go-on-your-merry-way"><span class="octicon octicon-link"></span></a>Go on your merry way</h5>
 
 <pre><code>GAG&gt; exit
 </code></pre>
 
 <p>You now have a folder in your working directory called 'newfolder'. It contains a .gff, several .fastas and your shiny new .tbl file. Congratulations!</p>
+<h1><a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>Advanced Usage</h1>
       </section>
     </div>
 
