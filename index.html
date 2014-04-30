@@ -39,32 +39,41 @@
 
 <h4>Purpose</h4>
 <p>GAG can read a genome and write it to the NCBI's .tbl format. This is the main purpose of the program. However, if you're writing a .tbl file, there's a good chance that your genome is destined to encounter <a href="https://www.ncbi.nlm.nih.gov/genbank/tbl2asn2">tbl2asn</a> further downstream. In anticipation of this meeting, GAG includes a (growing) number of options to remove questionable features or trim erroneous regions from your genome. These options are outlined in the <a href="#advanced-usage">Advanced Usage</a> secion.</p>
-
+<h4>Genome</h4>
+<p>What is a genome? Great question. A genome can be many things to many people. To GAG, a genome is a .fasta file and a .gff file. More specifically, a genome is a folder containing two files called 'genome.fasta' and 'genome.gff'. Anything else in the folder will be ignored.</p>
+<h4>Fasta File</h4>
+<p>You must provide GAG with a .fasta file of nucleic acid sequence data. (More info <a href="https://en.wikipedia.org/wiki/FASTA_format">here</a>.) It is important to note that GAG is only expecting to find 'A', 'C', 'G', 'T' or 'N' in your sequences. Mixed bases ('R', 'M', etc.) or invalid bases ('Q', 'ㅊ', etc.) are converted to 'N' for the purpose of protein translation, start/stop codon detection or whatever else we might dream up.
+<h4>GFF File</h4>
+<p>For best results, use a valid .gff file. The .gff specification can be found at the <a href="http://www.sequenceontology.org/gff3.shtml">Sequence Ontology</a> homepage, and there is a validator <a href="http://modencode.oicr.on.ca/cgi-bin/validate_gff3_online">here</a>. (For unpredictable results, go ahead and try to load an invalid file. It's been known to work. Who knows?)</p>
+<p>GAG can read and write functional annotations. All of this happens in the "attributes" column of the file. The "ID" field is required to be unique for each feature; the "Parent" field is required for all non-gene features; everything else is gravy. For example, add a unique "Name" field to your gene and it will be included in your .tbl file. Attach "Dbxref" or "Ontology_term" fields to your mRNA feature and these annotations will be added when you write a .tbl file.</p>
+<h4>Installation</h4>
+<p>GAG is written in Python. Assuming you have Python (2, not 3) installed, you can download the zipped source code from the link at the top of this page, extract it and run it. The command to start the program is <pre><code>python gag.py</code></pre></p>
+<h4>Help</h4>
+<p>GAG features contextual help spread out amongst a number of task-oriented <a href="#nested-subconsoles">subconsoles</a>. At any given point, type <code>help</code> to see a list of available commands, and type <code>help &lt;name_of_command&gt;</code> to get instructions about a specific command.</p>
+</p>Please note that the available commands will differ depending on which subconsole you are in. Frustrated? Lost? Type <code>home</code> to get back to the main console.</p>
+<p>If that doesn't cut it, and this document doesn't answer your questions, you can visit our <a href="https://groups.google.com/forum/#!forum/gag_support">Support Page</a>.
+<h4><a name="citing-gag" class="anchor" href="#citing-gag"></a>Citing GAG</h4>
+<p>Please cite as follows:</p>
+<blockquote>Geib, S., DeRego, T., &amp; Hall, B. (2014). GAG: the Genome Annotation Generator (Version 1.0) [Software]. Available from <a href="http://brianreallymany.github.io/GAG/">http://brianreallymany.github.io/GAG</a></blockquote>
 <h1><a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h1>
 
-<p>A console-based program to read, modify, annotate and output genomic data. Can write files to .gff or to the NCBI's .tbl format.</p>
 
-<a href="https://groups.google.com/forum/#!forum/gag_support">Support</a>
 
-<h3>
-<a name="example-usage" class="anchor" href="#example-usage"><span class="octicon octicon-link"></span></a>Example Usage</h3>
-
-<p>In this exciting vignette, you will create a .tbl file from the .fasta and .gff files provided in the 'walkthrough' directory. You should run these commands from within the main GAG directory, or else adjust the file paths.</p>
+<p>In this exciting vignette, you will create a .tbl file (along with cds, mrna and protein .fasta files) from the .fasta and .gff files provided in the 'walkthrough/basic' directory.</p>
+<p>GAG writes a number of (lightweight) history, config, stats and log files while you run it. For best results, run GAG from within the directory that contains your genome. This will keep all those files in one place.</p>
+<p>The following walkthroughs all assume that you have taken this advice; if you run GAG from another folder, you should adjust the path in the 'load' command.</p>
+<p>When GAG starts up, you'll see an exciting load screen and the GAG prompt. It looks like this:
+<pre><code>GAG&gt; </pre></code>
+<p>(In the examples that follow, the prompt is just there to make the tutorial resemble your screen. You don't need to type it. The only time you should ever need to type 'GAG' in all caps is when you <a href="#citing-gag">cite it</a> in your amazing paper.)</p>
 
 <h5>
-<a name="run-program" class="anchor" href="#run-program"><span class="octicon octicon-link"></span></a>Run program</h5>
+<a name="read-in-genome" class="anchor" href="#read-in-genome"><span class="octicon octicon-link"></span></a>Read in genome</h5>
 
-<pre><code>python console.py
+<pre><code>GAG&gt; load .
 </code></pre>
 
 <h5>
-<a name="read-in-data" class="anchor" href="#read-in-data"><span class="octicon octicon-link"></span></a>Read in data</h5>
-
-<pre><code>GAG&gt; load walkthrough
-</code></pre>
-
-<h5>
-<a name="write-tbl-file" class="anchor" href="#write-tbl-file"><span class="octicon octicon-link"></span></a>Write .tbl file</h5>
+<a name="write-output-files" class="anchor" href="#write-output-files"><span class="octicon octicon-link"></span></a>Write output files</h5>
 
 <pre><code>GAG&gt; write newfolder
 </code></pre>
@@ -77,6 +86,43 @@
 
 <p>You now have a folder in your working directory called 'newfolder'. It contains a .gff, several .fastas and your shiny new .tbl file. Congratulations!</p>
 <h1><a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>Advanced Usage</h1>
+<p>The following two vignettes demonstrate some of GAG's capabilities for removing questionable features of your genome, fixing mistakes, and flagging features for further investigation.</p>
+
+<h3>Removing Terminal 'N's</h3>
+<p>The NCBI will not accept submissions containing sequences that begin or end with unknown bases. Using GAG, you can check each sequence in your .fasta for 'N's at the beginning or the end. If it finds any, it will remove them from the sequence and (if the bases were at the beginning of the sequence) update the indices of all features on the sequence accordingly. If by chance you have a gene that starts on one of these unknown bases, it will be removed. Such is life.</p>
+<p>To harness this awesome power, first start GAG and load your genome. Then type <code>fix</code>. This takes you to the 'GAG FIX' subconsole. Your first subconsole! Nice work. Type <code>help</code> to see commands available within this subconsole. You should be looking at something like
+<pre><code>Documented commands (type help <topic>):
+========================================
+all  home  start_stop_codons  terminal_ns
+</code></pre></p>
+<p>Type <code>terminal_ns</code> (now is a great time to try out GAG's <a href="#tab-completion">tab completion</a> feature). Press enter. If all went well, you should see this:<pre><code>GAG FIX&gt; terminal_ns
+
+Terminal Ns will now be fixed.
+
+----------------------------------------
+GAG&gt;</code></pre>
+
+
+
+<h1><a name="additional-notes" class="anchor" href="#additional-notes"><span class="octicon octicon-link"></span></a>Additional Notes</h1>
+<p>Users who anticipate a long, fruitful career as GAG wizards should familiarize themselves with these GAG Facts and Features.</p>
+
+<h3><a name="tab-completion" class="anchor" href="#tab-completion"></a>Tab Completion</h3>
+<p>GAG implements contextual tab completion. This is a fancy way of saying that sometimes hitting the Tab key will finish your word and sometimes it won't. To be more specific, tab completion works on available commands (depending on your subconsole), but not arguments. Full-on psychic power tab completion is on a <a href="https://github.com/BrianReallyMany/GAG/issues/63">TODO list</a>.</p>
+
+<h3><a name="nested-subconsoles" class="anchor" href="#nested-subconsoles"></a>Nested Subconsoles</h3>
+<p>The prompt you see when you first start the program simply says <code>GAG> </code>. This is the main GAG console. If you type <code>help</code> you will see a list of commands. We have tried to keep this list, and the command names themselves, as short as possible. However, this is a program that lets you do things like "remove all mRNAs containing an intron shorter than 10 base pairs in length, while flagging any gene longer than 10,000 base pairs." How to offer that functionality without having umpteen commands all written in LengthyAndTypographicalErrorProneCamelCase? That's right, all together now: nested subconsoles.</p>
+<p>To take the first of the commands above as an example, the first thing you must do is announce your intention to <code>remove</code> something. This takes you to the <code>GAG REMOVE&gt; </code> subconsole. Typing <code>help</code> here will generate a different list of available commands, including the very useful-looking <code>intron_shorter_than</code>. Typing this will take you deeper still, into the <code>GAG REMOVE intron_shorter_than&gt; </code> subconsole. Yes, that is a thing. From here, you can view the current minimum intron length ('0' means no minimum) or set a new minimum intron length. Once you perform the latter (or type <code>home</code>), you'll be returned to the main console.</p>
+
+<h3><a name="i-hate-nested-subconsoles" class="anchor" href="#i-hate-nested-subconsoles"></a>...But I Hate Nested Subconsoles</h3>
+<p>Relax, and be nice. We've got you covered. The second command described above ("flag any gene longer than 10,000 base pairs") could be carried out subconsole by subconsole, by typing <code>flag</code> and hitting enter to reach the <code>GAG FLAG&gt; </code> subconsole. From there you could type <code>gene_longer_than</code> and hit enter, and then type <code>10000</code> when prompted. You could. But who has the time?</p>
+<p>If you know what you're doing, you can simply type 
+<pre><code>GAG &gt; flag gene_longer_than 10000</code></pre>
+from the main console. It does the same thing. Please note, though, that tab completion won't work past the first command, and spelling counts. If you make a mistake, GAG will take you as far as it can. For example, if you type 
+<pre><code>GAG&gt; flag gene_longer_than ... IDK, what do you think?</code></pre> 
+then GAG will take you as far as the <code>GAG FLAG gene_longer_than&gt; </code> subconsole, who will gently chide you for entering an invalid length.</p>
+<p>Remember that you can always type <code>home</code> to return to the main console.</p>
+
       </section>
     </div>
 
@@ -87,8 +133,6 @@
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-    
 
   </body>
 </html>
