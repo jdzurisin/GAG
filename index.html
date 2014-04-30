@@ -52,7 +52,7 @@
 <pre><code>export PATH=$PATH:/path/to/wherever/you/installed/GAG</code></pre></p>
 <p>Adding the above line to your '~/.bash_profile' file will ensure that GAG is always at your fingertips.</p>
 <h4>Help</h4>
-<p>GAG features contextual help spread out amongst a number of task-oriented <a href="#nested-subconsoles">subconsoles</a>. At any given point, type <code>help</code> to see a list of available commands, and type <code>help &lt;name_of_command&gt;</code> to get instructions about a specific command.</p>
+<p>GAG features contextual help spread out amongst a number of task-oriented <a href="#nested-subconsoles">subconsoles</a>. At any point, type <code>help</code> to see a list of available commands, and type <pre><code>help &lt;name_of_command&gt;</code></pre> to get instructions about a specific command.</p>
 </p>Please note that the available commands will differ depending on which subconsole you are in. Frustrated? Lost? Type <code>home</code> to get back to the main console.</p>
 <p>If that doesn't cut it, and this document doesn't answer your questions, you can visit our <a href="https://groups.google.com/forum/#!forum/gag_support">Support Page</a>.
 <h4><a name="citing-gag" class="anchor" href="#citing-gag"></a>Citing GAG</h4>
@@ -91,7 +91,7 @@
 <h1><a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>Advanced Usage</h1>
 <p>The following two vignettes demonstrate some of GAG's capabilities for removing questionable features of your genome, fixing mistakes, and flagging features for further investigation.</p>
 
-<h3>Removing Terminal 'N's</h3>
+<h3><a name="fix-terminal-ns" class="anchor" href="#fix-terminal-ns"></a>Removing Terminal 'N's</h3>
 <p>The NCBI will not accept submissions containing sequences that begin or end with unknown bases. For example, take a look at the file 'walkthrough/terminal_ns/genome.fasta'. It is crawling with unknown bases. This type of sequence will earn your genome submission a big read REJECTED stamp.</p>
 <p>GAG can check each sequence in your .fasta for 'N's at the beginning or the end. If it finds any, it will remove them from the sequence and (if the bases were at the beginning of the sequence) update the indices of all features on the sequence accordingly. If by chance you have a gene that starts on one of these unknown bases, it will be removed. Such is life.</p>
 <p>To harness this awesome power, first start GAG and load the genome contained in the 'walkthrough/terminal_ns' folder. Then type <code>fix</code>. This takes you to the 'GAG FIX' subconsole. Your first subconsole! Nice work. Type <code>help</code> to see commands available within this subconsole. You should be looking at something like this:
@@ -128,6 +128,78 @@ GAG&gt;</code></pre>
 <pre><code>GAG&gt; write terminal_ns_removed</code></pre></p>
 <p>Exit and have a look at the results. If you open the file 'terminal_ns_removed/genome.fasta' you can see that it contains no 'N's. Additionally, the indices of each feature in 'terminal_ns_removed/genome.gff' are updated to correspond to the new, cleaned up sequence.</p>
 
+<h3>Removing Short Introns</h3>
+<p>Another NCBI guideline involves minimum length of introns. Ten seems to be the magic number. It's pretty common to find genome assemblies with shorter introns, though. Luckily, GAG can remove the for you.</p>
+<p>To begin, start GAG and load the genome contained in 'walkthrough/short_introns'. Type <code>info</code>. You'll see a lot of statistics; here is an abbreviated version:
+<pre><code>GAG> info
+----------------------------------------
+Number of sequences:   1
+                                 Genome     
+                                 ------     
+Total sequence length            105       
+Number of genes                  2          
+...
+Shortest intron                  6          
+...
+</code></pre>
+<p>So we have two genes, and at least one of them has a suspiciously short intron. To address this, type <code>remove</code>. You'll see this prompt:
+<pre><code>GAG REMOVE&gt; </code></pre></p>
+<p>From here, type <code>intron_shorter_than</code>. When you're prompted for a length, type <code>10</code>. Your screen should look something like this:
+<pre><code>GAG REMOVE&gt; intron_shorter_than
+This is the REMOVE intron_shorter_than console. Type a value
+to set the criteria, or simply press enter to see the current value.
+
+GAG REMOVE intron_shorter_than&gt; 10
+
+intron_shorter_than 10 will be removed.
+
+----------------------------------------
+GAG&gt; 
+</code></pre></p>
+<p>Now that we're back at the home console, type <code>info</code> again. Here's some abbreviated output again:
+<pre><code>Number of sequences:   1
+                                 Reference Genome     Modified Genome     
+                                 ----------------     ---------------     
+Total sequence length            105                  105                 
+Number of genes                  2                    1                   
+Number of mRNAs                  2                    1                   
+Number of exons                  4                    2                   
+...
+Shortest intron                  6                    12   
+...
+</code></pre></p>
+<p>That 'Shortest intron' row is looking pretty nice! It came at a price, though; we lost a gene. GAG's policy is to remove mRNAs that contain offending features (introns, exons or CDSs that are too short/long). Another policy is to remove genes which contain no mRNAs. So in this case, as the gene contained only one (questionable) mRNA, it was scrapped.</p>
+<p>If you write this modified genome to a folder (by typing <code>write short_introns_removed</code>, for example), as a bonus you'll receive a file called 'genome.removed.gff'. Our poor, ill-fated, short-intron-having gene will live on in this file.</p>
+
+<h3>Other Features</h3>
+<p>GAG boasts the following features to help clean up your genome:</p>
+<table>
+    <tbody>
+        <tr>
+            <th>Command</th>
+            <th>Parameters</th>
+            <th>Explanation</th>
+        </tr>
+        <tr>
+            <td>Remove</td>
+            <td>cds_shorter_than, cds_longer_than, intron_shorter_than, intron_longer_than, exon_shorter_than, exon_longer_than, gene_shorter_than, gene_longer_than</td>
+            <td>In the case of CDS, intron or exon, remove parent mRNA if feature is shorter/longer than limit supplied. In the case of genes, remove the gene.
+        </tr>
+        <tr>
+            <td>Flag</td>
+            <td>cds_shorter_than, cds_longer_than, intron_shorter_than, intron_longer_than, exon_shorter_than, exon_longer_than, gene_shorter_than, gene_longer_than</td>
+            <td>Rather than remove features, append an annotation (starting with the string 'gag_flag'). This function is useful for examining suspicious features manually, e.g. in a genome browser.
+        </tr>
+        <tr>
+            <td>Fix</td>
+            <td>start_stop_introns, terminal_ns, all</td>
+            <td><p>If you select 'start_stop_introns', GAG will check the first three bases of each CDS to see if they form a start codon. If so, a start codon is added to the mRNA. The same is performed for the last three bases, creating stop codons. This function is useful if you receive 'PartialProblem' errors from tbl2asn.</p>
+                <p><a href="#fix-terminal-ns">See above</a> for an explanation of 'terminal_ns'.</p>
+                <p>Typing 'all' will enable both of these.</p></td>
+        </tr>
+        <tr>
+    </tbody>
+</table>
 
 
 <h1><a name="additional-notes" class="anchor" href="#additional-notes"><span class="octicon octicon-link"></span></a>Additional Notes</h1>
@@ -137,7 +209,7 @@ GAG&gt;</code></pre>
 <p>GAG implements contextual tab completion. This is a fancy way of saying that sometimes hitting the Tab key will finish your word and sometimes it won't. To be more specific, tab completion works on available commands (depending on your subconsole), but not arguments. Full-on psychic power tab completion is on a <a href="https://github.com/BrianReallyMany/GAG/issues/63">TODO list</a>.</p>
 
 <h3><a name="nested-subconsoles" class="anchor" href="#nested-subconsoles"></a>Nested Subconsoles</h3>
-<p>The prompt you see when you first start the program simply says <code>GAG> </code>. This is the main GAG console. If you type <code>help</code> you will see a list of commands. We have tried to keep this list, and the command names themselves, as short as possible. However, this is a program that lets you do things like "remove all mRNAs containing an intron shorter than 10 base pairs in length, while flagging any gene longer than 10,000 base pairs." How to offer that functionality without having umpteen commands all written in LengthyAndTypographicalErrorProneCamelCase? That's right, all together now: nested subconsoles.</p>
+<p>The prompt you see when you first start the program simply says <code>GAG&gt; </code>. This is the main GAG console. If you type <code>help</code> you will see a list of commands. We have tried to keep this list, and the command names themselves, as short as possible. However, this is a program that lets you do things like "remove all mRNAs containing an intron shorter than 10 base pairs in length, while flagging any gene longer than 10,000 base pairs." How to offer that functionality without having umpteen commands all written in LengthyAndTypographicalErrorProneCamelCase? That's right, all together now: nested subconsoles.</p>
 <p>To take the first of the commands above as an example, the first thing you must do is announce your intention to <code>remove</code> something. This takes you to the <code>GAG REMOVE&gt; </code> subconsole. Typing <code>help</code> here will generate a different list of available commands, including the very useful-looking <code>intron_shorter_than</code>. Typing this will take you deeper still, into the <code>GAG REMOVE intron_shorter_than&gt; </code> subconsole. Yes, that is a thing. From here, you can view the current minimum intron length ('0' means no minimum) or set a new minimum intron length. Once you perform the latter (or type <code>home</code>), you'll be returned to the main console.</p>
 
 <h3><a name="i-hate-nested-subconsoles" class="anchor" href="#i-hate-nested-subconsoles"></a>...But I <em>Hate</em> Nested Subconsoles</h3>
