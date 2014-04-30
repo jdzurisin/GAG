@@ -48,6 +48,9 @@
 <p>GAG can read and write functional annotations. All of this happens in the "attributes" column of the file. The "ID" field is required to be unique for each feature; the "Parent" field is required for all non-gene features; everything else is gravy. For example, add a unique "Name" field to your gene and it will be included in your .tbl file. Attach "Dbxref" or "Ontology_term" fields to your mRNA feature and these annotations will be added when you write a .tbl file.</p>
 <h4>Installation</h4>
 <p>GAG is written in Python. Assuming you have Python (2, not 3) installed, you can download the zipped source code from the link at the top of this page, extract it and run it. The command to start the program is <pre><code>python gag.py</code></pre></p>
+<p>It's recommended (though not required) to run GAG from inside the folder that contains your genome. To make this easier, you might consider adding GAG to your $PATH variable. One way to do that is to type the following from a Linux prompt:
+<pre><code>export PATH=$PATH:/path/to/wherever/you/installed/GAG</code></pre></p>
+<p>Adding the above line to your '~/.bash_profile' file will ensure that GAG is always at your fingertips.</p>
 <h4>Help</h4>
 <p>GAG features contextual help spread out amongst a number of task-oriented <a href="#nested-subconsoles">subconsoles</a>. At any given point, type <code>help</code> to see a list of available commands, and type <code>help &lt;name_of_command&gt;</code> to get instructions about a specific command.</p>
 </p>Please note that the available commands will differ depending on which subconsole you are in. Frustrated? Lost? Type <code>home</code> to get back to the main console.</p>
@@ -89,11 +92,30 @@
 <p>The following two vignettes demonstrate some of GAG's capabilities for removing questionable features of your genome, fixing mistakes, and flagging features for further investigation.</p>
 
 <h3>Removing Terminal 'N's</h3>
-<p>The NCBI will not accept submissions containing sequences that begin or end with unknown bases. Using GAG, you can check each sequence in your .fasta for 'N's at the beginning or the end. If it finds any, it will remove them from the sequence and (if the bases were at the beginning of the sequence) update the indices of all features on the sequence accordingly. If by chance you have a gene that starts on one of these unknown bases, it will be removed. Such is life.</p>
-<p>To harness this awesome power, first start GAG and load your genome. Then type <code>fix</code>. This takes you to the 'GAG FIX' subconsole. Your first subconsole! Nice work. Type <code>help</code> to see commands available within this subconsole. You should be looking at something like
-<pre><code>Documented commands (type help <topic>):
+<p>The NCBI will not accept submissions containing sequences that begin or end with unknown bases. For example, take a look at the file 'walkthrough/terminal_ns/genome.fasta'. It is crawling with unknown bases. This type of sequence will earn your genome submission a big read REJECTED stamp.</p>
+<p>GAG can check each sequence in your .fasta for 'N's at the beginning or the end. If it finds any, it will remove them from the sequence and (if the bases were at the beginning of the sequence) update the indices of all features on the sequence accordingly. If by chance you have a gene that starts on one of these unknown bases, it will be removed. Such is life.</p>
+<p>To harness this awesome power, first start GAG and load the genome contained in the 'walkthrough/terminal_ns' folder. Then type <code>fix</code>. This takes you to the 'GAG FIX' subconsole. Your first subconsole! Nice work. Type <code>help</code> to see commands available within this subconsole. You should be looking at something like this:
+<pre><code>GAG&gt; fix
+----------------------------------------
+
+This is the GAG FIX menu.
+You can apply the following fixes: terminal_ns, start_stop_codons.
+(You can type 'home' at any time to return to the main GAG console.)
+Type the name of a fix to enable it. Type 'all' to enable everything.
+
+terminal_ns, start_stop_codons or all?
+
+GAG FIX&gt; help
+
+Documented commands (type help <topic>):
 ========================================
 all  home  start_stop_codons  terminal_ns
+
+Undocumented commands:
+======================
+help
+
+GAG FIX&gt;
 </code></pre></p>
 <p>Type <code>terminal_ns</code> (now is a great time to try out GAG's <a href="#tab-completion">tab completion</a> feature). Press enter. If all went well, you should see this:<pre><code>GAG FIX&gt; terminal_ns
 
@@ -101,6 +123,10 @@ Terminal Ns will now be fixed.
 
 ----------------------------------------
 GAG&gt;</code></pre>
+<p>Note that no changes have been made to the genome at this point. Only when you view a feature, ask for info or write the genome to a new folder will this fix be applied.</p>
+<p>To confirm that something actually happened, write the modified genome to a folder:
+<pre><code>GAG&gt; write terminal_ns_removed</code></pre></p>
+<p>Exit and have a look at the results. If you open the file 'terminal_ns_removed/genome.fasta' you can see that it contains no 'N's. Additionally, the indices of each feature in 'terminal_ns_removed/genome.gff' are updated to correspond to the new, cleaned up sequence.</p>
 
 
 
@@ -114,14 +140,14 @@ GAG&gt;</code></pre>
 <p>The prompt you see when you first start the program simply says <code>GAG> </code>. This is the main GAG console. If you type <code>help</code> you will see a list of commands. We have tried to keep this list, and the command names themselves, as short as possible. However, this is a program that lets you do things like "remove all mRNAs containing an intron shorter than 10 base pairs in length, while flagging any gene longer than 10,000 base pairs." How to offer that functionality without having umpteen commands all written in LengthyAndTypographicalErrorProneCamelCase? That's right, all together now: nested subconsoles.</p>
 <p>To take the first of the commands above as an example, the first thing you must do is announce your intention to <code>remove</code> something. This takes you to the <code>GAG REMOVE&gt; </code> subconsole. Typing <code>help</code> here will generate a different list of available commands, including the very useful-looking <code>intron_shorter_than</code>. Typing this will take you deeper still, into the <code>GAG REMOVE intron_shorter_than&gt; </code> subconsole. Yes, that is a thing. From here, you can view the current minimum intron length ('0' means no minimum) or set a new minimum intron length. Once you perform the latter (or type <code>home</code>), you'll be returned to the main console.</p>
 
-<h3><a name="i-hate-nested-subconsoles" class="anchor" href="#i-hate-nested-subconsoles"></a>...But I Hate Nested Subconsoles</h3>
+<h3><a name="i-hate-nested-subconsoles" class="anchor" href="#i-hate-nested-subconsoles"></a>...But I <em>Hate</em> Nested Subconsoles</h3>
 <p>Relax, and be nice. We've got you covered. The second command described above ("flag any gene longer than 10,000 base pairs") could be carried out subconsole by subconsole, by typing <code>flag</code> and hitting enter to reach the <code>GAG FLAG&gt; </code> subconsole. From there you could type <code>gene_longer_than</code> and hit enter, and then type <code>10000</code> when prompted. You could. But who has the time?</p>
 <p>If you know what you're doing, you can simply type 
 <pre><code>GAG &gt; flag gene_longer_than 10000</code></pre>
 from the main console. It does the same thing. Please note, though, that tab completion won't work past the first command, and spelling counts. If you make a mistake, GAG will take you as far as it can. For example, if you type 
 <pre><code>GAG&gt; flag gene_longer_than ... IDK, what do you think?</code></pre> 
 then GAG will take you as far as the <code>GAG FLAG gene_longer_than&gt; </code> subconsole, who will gently chide you for entering an invalid length.</p>
-<p>Remember that you can always type <code>home</code> to return to the main console.</p>
+<p>Remember that should you get lost in some dark, scary subconsole, you can always type <code>home</code> to return to where you started.</p>
 
       </section>
     </div>
